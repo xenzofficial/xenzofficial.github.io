@@ -1,0 +1,339 @@
+echo'''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found | Animated</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            perspective: 1000px;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .glitch-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-text {
+            font-size: 12rem;
+            font-weight: 900;
+            letter-spacing: -10px;
+            position: relative;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
+            animation: glitch-anim 2.5s infinite;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: "404";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            left: 4px;
+            text-shadow: -4px 0 #00ffff;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -4px;
+            text-shadow: -4px 0 #ff00ff;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            transform: translateY(20px);
+            animation: fadeInUp 1.5s forwards;
+        }
+
+        p {
+            max-width: 500px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeInUp 1.5s 0.5s forwards;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s;
+            opacity: 0;
+            animation: fadeInUp 1.5s 1s forwards;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            border-color: rgba(255, 255, 255, 1);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        /* Particle Canvas */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        /* Animations */
+        @keyframes glitch-anim {
+            0% { text-shadow: 0 0 10px rgba(255, 0, 255, 0.8); }
+            20% { text-shadow: 0 0 15px rgba(0, 255, 255, 0.8), -5px 0 10px rgba(255, 0, 0, 0.8); }
+            40% { transform: translate(0); }
+            60% { transform: translate(-5px, 5px); }
+            80% { transform: translate(5px, -3px); }
+            100% { text-shadow: 0 0 10px rgba(255, 0, 255, 0.8); }
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(24px, 550px, 90px, 0); }
+            20% { clip: rect(65px, 550px, 130px, 0); }
+            40% { clip: rect(40px, 550px, 110px, 0); }
+            60% { clip: rect(50px, 550px, 120px, 0); }
+            80% { clip: rect(30px, 550px, 100px, 0); }
+            100% { clip: rect(80px, 550px, 150px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(85px, 550px, 140px, 0); }
+            20% { clip: rect(100px, 550px, 180px, 0); }
+            40% { clip: rect(70px, 550px, 120px, 0); }
+            60% { clip: rect(90px, 550px, 160px, 0); }
+            80% { clip: rect(110px, 550px, 190px, 0); }
+            100% { clip: rect(60px, 550px, 130px, 0); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles-js"></canvas>
+    <div class="floating-elements"></div>
+    
+    <div class="container">
+        <div class="glitch-container">
+            <div class="glitch-text">404</div>
+        </div>
+        <h2>PAGE NOT FOUND</h2>
+        <p>The page you are looking for might have been removed, had its name changed or is temporarily unavailable.</p>
+        <a href="/" class="btn">Return Home</a>
+    </div>
+
+    <script>
+        // Generate floating elements
+        const floatingContainer = document.querySelector('.floating-elements');
+        for (let i = 0; i < 20; i++) {
+            const element = document.createElement('div');
+            element.classList.add('floating-element');
+            
+            // Random size
+            const size = Math.random() * 50 + 10;
+            element.style.width = `${size}px`;
+            element.style.height = `${size}px`;
+            
+            // Random position
+            element.style.left = `${Math.random() * 100}%`;
+            element.style.bottom = `-${size}px`;
+            
+            // Animation duration and delay
+            element.style.animationDuration = `${Math.random() * 20 + 10}s`;
+            element.style.animationDelay = `${Math.random() * 5}s`;
+            
+            floatingContainer.appendChild(element);
+        }
+
+        // Particle system
+        const canvas = document.getElementById('particles-js');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particlesArray = [];
+        const numberOfParticles = 150;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.color = `rgba(${Math.floor(Math.random() * 100 + 155)}, 
+                                  ${Math.floor(Math.random() * 100 + 155)}, 
+                                  ${Math.floor(Math.random() * 255)}, 
+                                  ${Math.random() * 0.5 + 0.1})`;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                
+                // Connect particles with lines
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 - distance/500})`;
+                        ctx.lineWidth = 0.2;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Interactive mouse effect
+        document.addEventListener('mousemove', (e) => {
+            particlesArray.forEach(particle => {
+                const dx = e.clientX - particle.x;
+                const dy = e.clientY - particle.y;
+                const distance = Math.sqrt(dx * dx + dy * if (distance < 100) {
+                    particle.speedX += dx * 0.0005;
+                    particle.speedY += dy * 0.0005;
+                }
+            });
+        });
+    </script>
+</body>
+</html>''' 404.html
