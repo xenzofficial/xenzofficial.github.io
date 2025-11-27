@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRIS Payment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            flex-direction: column;
+        }
+
+        .container {
+            text-align: center;
+            padding: 10px;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #qrcode img {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <div id="qrcode"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        // Data QRIS Anda
+        const qrisData = "00020101021126670016COM.NOBUBANK.WWW01189360050300000879140214125244468351780303UMI51440014ID.CO.QRIS.WWW0215ID20254030242630303UMI5204541153033605802ID5918AL STORE OK23802686007CILACAP61055321162070703A016304D266";
+
+        // Fungsi untuk mendapatkan parameter dari URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            const results = regex.exec(window.location.href);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Fungsi Render QR Code
+        function generateQR(text) {
+            const qrcodeContainer = document.getElementById('qrcode');
+            qrcodeContainer.innerHTML = "";
+            
+            new QRCode(qrcodeContainer, {
+                text: text,
+                width: 250,
+                height: 250,
+                colorDark: "#0f0f88",
+                colorLight: "#ff0000",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        // Fungsi membuat QRIS dinamis
+        function makeDynamic(qris, nominal) {
+            let str = qris.slice(0, -4);
+            str = str.replace("010211", "010212");
+            
+            let parts = str.split("5802ID");
+            if (parts.length < 2) return qris;
+
+            let prefix = parts[0];
+            let suffix = "5802ID" + parts[1];
+            let nominalStr = nominal.toString();
+            let tag54 = "54" + nominalStr.length.toString().padStart(2, '0') + nominalStr;
+            let rawQR = prefix + tag54 + suffix;
+            let crc = crc16(rawQR);
+
+            return rawQR + crc;
+        }
+
+        // Algoritma CRC16
+        function crc16(s) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < s.length; i++) {
+                let c = s.charCodeAt(i);
+                crc ^= c << 8;
+                for (let j = 0; j < 8; j++) {
+                    if (crc & 0x8000) {
+                        crc = (crc << 1) ^ 0x1021;
+                    } else {
+                        crc = crc << 1;
+                    }
+                }
+            }
+            return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, "0");
+        }
+
+        // Inisialisasi
+        window.onload = function() {
+            const payParam = getUrlParameter('pay');
+            const mainContainer = document.getElementById('mainContainer');
+
+            // Sembunyikan container jika tidak ada parameter
+            if (!payParam || isNaN(payParam) || parseInt(payParam) <= 0) {
+                mainContainer.classList.add('hidden');
+                return;
+            }
+
+            // Tampilkan QRIS jika ada parameter yang valid
+            const finalQRData = makeDynamic(qrisData, parseInt(payParam));
+            generateQR(finalQRData);
+            mainContainer.classList.remove('hidden');
+        };
+    </script>
+</body>
+</html>
