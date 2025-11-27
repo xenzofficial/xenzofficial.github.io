@@ -3,133 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QRIS Payment</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #qrcode img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+    <title>Support Our Development</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="qrcode"></div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <span class="logo-text">DevFund</span>
+            </div>
+            <nav class="nav">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#donate" class="nav-link">Donate</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+        </header>
 
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <script>
-        // Data QRIS Anda
-        const qrisData = "00020101021126670016COM.NOBUBANK.WWW01189360050300000879140214125244468351780303UMI51440014ID.CO.QRIS.WWW0215ID20254030242630303UMI5204541153033605802ID5918AL STORE OK23802686007CILACAP61055321162070703A016304D266";
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>🚀 Future Vision 2025</span>
+                </div>
+                <h1 class="hero-title">
+                    Support Our 
+                    <span class="gradient-text">Digital Evolution</span>
+                </h1>
+                <p class="hero-description">
+                    Help us build the next generation of web experiences. 
+                    Every contribution fuels innovation and drives technological advancement.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number" id="supportersCount">0</div>
+                        <div class="stat-label">Supporters</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">₿</div>
+                        <div class="stat-label">Crypto Ready</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="progressPercent">0%</div>
+                        <div class="stat-label">Monthly Goal</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <div class="card-icon">💎</div>
+                    <div class="card-text">Premium Features</div>
+                </div>
+                <div class="floating-card card-2">
+                    <div class="card-icon">🚀</div>
+                    <div class="card-text">Fast Development</div>
+                </div>
+                <div class="floating-card card-3">
+                    <div class="card-icon">🛡️</div>
+                    <div class="card-text">Secure & Reliable</div>
+                </div>
+            </div>
+        </section>
 
-        // Fungsi untuk mendapatkan parameter dari URL
-        function getUrlParameter(name) {
-            name = name.replace(/[\[\]]/g, '\\$&');
-            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-            const results = regex.exec(window.location.href);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
+        <!-- Donation Section -->
+        <section id="donate" class="donation-section">
+            <div class="section-header">
+                <h2>Make a Contribution</h2>
+                <p>Choose your donation method</p>
+            </div>
 
-        // Fungsi membuat QRIS dinamis
-        function makeDynamic(qris, nominal) {
-            let str = qris.slice(0, -4);
-            str = str.replace("010211", "010212");
-            
-            let parts = str.split("5802ID");
-            if (parts.length < 2) return qris;
-
-            let prefix = parts[0];
-            let suffix = "5802ID" + parts[1];
-            let nominalStr = nominal.toString();
-            let tag54 = "54" + nominalStr.length.toString().padStart(2, '0') + nominalStr;
-            let rawQR = prefix + tag54 + suffix;
-            let crc = crc16(rawQR);
-
-            return rawQR + crc;
-        }
-
-        // Algoritma CRC16
-        function crc16(s) {
-            let crc = 0xFFFF;
-            for (let i = 0; i < s.length; i++) {
-                let c = s.charCodeAt(i);
-                crc ^= c << 8;
-                for (let j = 0; j < 8; j++) {
-                    if (crc & 0x8000) {
-                        crc = (crc << 1) ^ 0x1021;
-                    } else {
-                        crc = crc << 1;
-                    }
-                }
-            }
-            return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, "0");
-        }
-
-        // Inisialisasi
-        window.onload = function() {
-            const payParam = getUrlParameter('amount');
-            const qrcodeContainer = document.getElementById('qrcode');
-
-            // Jika tidak ada parameter, sembunyikan semuanya
-            if (!payParam || isNaN(payParam) || parseInt(payParam) <= 0) {
-                document.body.innerHTML = '';
-                return;
-            }
-
-            // Tampilkan QRIS jika ada parameter yang valid
-            const finalQRData = makeDynamic(qrisData, parseInt(payParam));
-            
-            // Generate QR code menggunakan canvas
-            const qrcode = new QRCode(qrcodeContainer, {
-                text: finalQRData,
-                width: 300,
-                height: 300,
-                colorDark: "#0f0f88",
-                colorLight: "#ff0000",
-                correctLevel: QRCode.CorrectLevel.H,
-                useSVG: false // Pastikan menggunakan canvas, bukan SVG
-            });
-
-            // Konversi canvas ke gambar PNG
-            setTimeout(() => {
-                const canvas = qrcodeContainer.querySelector('canvas');
-                if (canvas) {
-                    // Buat elemen img baru
-                    const img = document.createElement('img');
-                    img.src = canvas.toDataURL('image/png');
-                    img.alt = 'Qris Payment';
+            <div class="donation-methods">
+                <!-- QRIS Method -->
+                <div class="method-card active" data-method="qris">
+                    <div class="method-header">
+                        <div class="method-icon">🇮🇩</div>
+                        <h3>QRIS Payment</h3>
+                        <span class="method-badge">Popular</span>
+                    </div>
+                    <p>Instant payment via Indonesian QR Code Standard</p>
                     
-                    // Hapus canvas dan ganti dengan img
-                    qrcodeContainer.innerHTML = '';
-                    qrcodeContainer.appendChild(img);
-                }
-            }, 100);
-        };
-    </script>
+                    <div class="amount-selector">
+                        <label>Select Amount (IDR)</label>
+                        <div class="amount-buttons">
+                            <button class="amount-btn" data-amount="10000">10K</button>
+                            <button class="amount-btn" data-amount="25000">25K</button>
+                            <button class="amount-btn" data-amount="50000">50K</button>
+                            <button class="amount-btn" data-amount="100000">100K</button>
+                            <button class="amount-btn" data-amount="250000">250K</button>
+                            <button class="amount-btn" data-amount="500000">500K</button>
+                        </div>
+                        <div class="custom-amount">
+                            <input type="number" id="customAmount" placeholder="Custom amount">
+                            <span class="currency">IDR</span>
+                        </div>
+                    </div>
+
+                    <button class="generate-btn" id="generateQRIS">
+                        <span class="btn-text">Generate QR Code</span>
+                        <span class="btn-loader hidden">Generating...</span>
+                    </button>
+
+                    <div class="qris-preview hidden" id="qrisPreview">
+                        <div class="qris-container">
+                            <div id="qrcode"></div>
+                            <div class="qris-info">
+                                <h4>Scan to Donate</h4>
+                                <p>Use your banking app to scan this QR code</p>
+                                <div class="donation-amount" id="donationAmount"></div>
+                            </div>
+                        </div>
+                        <button class="download-btn" id="downloadQR">
+                            📥 Download QR
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Crypto Method -->
+                <div class="method-card" data-method="crypto">
+                    <div class="method-header">
+                        <div class="method-icon">₿</div>
+                        <h3>Crypto</h3>
+                        <span class="method-badge new">New</span>
+                    </div>
+                    <p>Support with cryptocurrency</p>
+                    
+                    <div class="crypto-addresses">
+                        <div class="crypto-wallet">
+                            <span class="crypto-icon">₿</span>
+                            <div class="wallet-info">
+                                <strong>Bitcoin (BTC)</strong>
+                                <code class="wallet-address">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</code>
+                            </div>
+                            <button class="copy-btn" data-address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
+                                Copy
+                            </button>
+                        </div>
+                        
+                        <div class="crypto-wallet">
+                            <span class="crypto-icon">⟠</span>
+                            <div class="wallet-info">
+                                <strong>Ethereum (ETH)</strong>
+                                <code class="wallet-address">0x742d35Cc6634C0532925a3b8D6B6f7a7a3A3dE7F</code>
+                            </div>
+                            <button class="copy-btn" data-address="0x742d35Cc6634C0532925a3b8D6B6f7a7a3A3dE7F">
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <div class="section-header">
+                <h2>About The Project</h2>
+                <p>Building the future, one line of code at a time</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Mission</h3>
+                    <p>Create cutting-edge web solutions that push the boundaries of modern technology and user experience.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔮</div>
+                    <h3>Vision</h3>
+                    <p>Pioneer the next generation of digital interactions with AI-powered, responsive, and accessible web applications.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💻</div>
+                    <h3>Technology</h3>
+                    <p>Utilizing the latest frameworks and tools to deliver premium performance and security.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>DevFund</h4>
+                    <p>Supporting digital innovation since 2024</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">GitHub</a>
+                        <a href="#" class="social-link">Twitter</a>
+                        <a href="#" class="social-link">LinkedIn</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <div class="legal-links">
+                        <a href="#" class="legal-link">Privacy Policy</a>
+                        <a href="#" class="legal-link">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 DevFund. All rights reserved. | Building the future</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
