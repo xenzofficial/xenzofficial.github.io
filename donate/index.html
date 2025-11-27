@@ -18,24 +18,18 @@
             justify-content: center;
             align-items: center;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            flex-direction: column;
-        }
-
-        .container {
-            text-align: center;
-            padding: 10px;
         }
 
         #qrcode {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
         }
 
         #qrcode img {
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            display: block;
         }
 
         .hidden {
@@ -44,11 +38,9 @@
     </style>
 </head>
 <body>
-    <div class="container" id="mainContainer">
-        <div id="qrcode"></div>
-    </div>
+    <div id="qrcode"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script>
         // Data QRIS Anda
         const qrisData = "00020101021126670016COM.NOBUBANK.WWW01189360050300000879140214125244468351780303UMI51440014ID.CO.QRIS.WWW0215ID20254030242630303UMI5204541153033605802ID5918AL STORE OK23802686007CILACAP61055321162070703A016304D266";
@@ -61,21 +53,6 @@
             if (!results) return null;
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
-
-        // Fungsi Render QR Code
-        function generateQR(text) {
-            const qrcodeContainer = document.getElementById('qrcode');
-            qrcodeContainer.innerHTML = "";
-            
-            new QRCode(qrcodeContainer, {
-                text: text,
-                width: 250,
-                height: 250,
-                colorDark: "#0f0f88",
-                colorLight: "#ff0000",
-                correctLevel: QRCode.CorrectLevel.H
-            });
         }
 
         // Fungsi membuat QRIS dinamis
@@ -115,19 +92,43 @@
 
         // Inisialisasi
         window.onload = function() {
-            const payParam = getUrlParameter('amount');
-            const mainContainer = document.getElementById('mainContainer');
+            const payParam = getUrlParameter('pay');
+            const qrcodeContainer = document.getElementById('qrcode');
 
-            // Sembunyikan container jika tidak ada parameter
+            // Jika tidak ada parameter, sembunyikan semuanya
             if (!payParam || isNaN(payParam) || parseInt(payParam) <= 0) {
-                mainContainer.classList.add('hidden');
+                document.body.innerHTML = '';
                 return;
             }
 
             // Tampilkan QRIS jika ada parameter yang valid
             const finalQRData = makeDynamic(qrisData, parseInt(payParam));
-            generateQR(finalQRData);
-            mainContainer.classList.remove('hidden');
+            
+            // Generate QR code menggunakan canvas
+            const qrcode = new QRCode(qrcodeContainer, {
+                text: finalQRData,
+                width: 300,
+                height: 300,
+                colorDark: "#0f0f88",
+                colorLight: "#ff0000",
+                correctLevel: QRCode.CorrectLevel.H,
+                useSVG: false // Pastikan menggunakan canvas, bukan SVG
+            });
+
+            // Konversi canvas ke gambar PNG
+            setTimeout(() => {
+                const canvas = qrcodeContainer.querySelector('canvas');
+                if (canvas) {
+                    // Buat elemen img baru
+                    const img = document.createElement('img');
+                    img.src = canvas.toDataURL('image/png');
+                    img.alt = 'Qris Payment';
+                    
+                    // Hapus canvas dan ganti dengan img
+                    qrcodeContainer.innerHTML = '';
+                    qrcodeContainer.appendChild(img);
+                }
+            }, 100);
         };
     </script>
 </body>
