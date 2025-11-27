@@ -3,448 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donasi Pengembangan Website</title>
+    <title>Support Development | Web 2025</title>
     <style>
+        /* --- RESET & FONTS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+
         :root {
-            --primary: #8a2be2;
-            --secondary: #4b0082;
-            --accent: #ff4500;
-            --dark: #0a0a14;
-            --darker: #050508;
-            --text: #f0f0f0;
-            --text-secondary: #b0b0b0;
+            --bg-color: #050505;
+            --card-bg: rgba(20, 20, 25, 0.6);
+            --primary: #00f2ea;
+            --secondary: #ff0055;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
-            color: var(--text);
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 242, 234, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 0, 85, 0.05) 0%, transparent 25%);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 69, 0, 0.1) 0%, transparent 50%);
-            z-index: -1;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        .logo {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .donation-section {
             display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-bottom: 3rem;
-            animation: fadeInUp 1s ease-out 0.3s both;
-        }
-
-        .donation-options {
-            flex: 1;
-            min-width: 300px;
-            background: rgba(20, 20, 30, 0.7);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(138, 43, 226, 0.2);
-        }
-
-        .qris-container {
-            flex: 1;
-            min-width: 320px;
-            background: rgba(20, 20, 30, 0.7);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(138, 43, 226, 0.2);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
         }
 
-        .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--text);
+        /* --- BACKGROUND ANIMATION --- */
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: moveGrid 20s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        /* --- CARD CONTAINER --- */
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        .donation-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 
+                        0 0 20px rgba(0, 242, 234, 0.1);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s ease-out forwards;
             position: relative;
-            display: inline-block;
+            overflow: hidden;
         }
 
-        .section-title::after {
+        /* Decorative Glow */
+        .donation-card::before {
             content: '';
             position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 3px;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
         }
 
-        .amount-options {
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* --- CONTROLS --- */
+        .amount-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        .amount-option {
-            background: rgba(40, 40, 60, 0.7);
-            border: 2px solid rgba(138, 43, 226, 0.3);
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
+        .chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
-            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
         }
 
-        .amount-option:hover {
-            transform: translateY(-5px);
+        .chip:hover {
+            background: rgba(0, 242, 234, 0.1);
             border-color: var(--primary);
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 242, 234, 0.2);
         }
 
-        .amount-option.active {
-            background: rgba(138, 43, 226, 0.2);
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+        .chip.active {
+            background: var(--primary);
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--primary);
         }
 
-        .custom-amount {
-            margin-bottom: 2rem;
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
         }
 
-        .custom-amount input {
+        .input-group label {
+            display: block;
+            text-align: left;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            margin-left: 5px;
+        }
+
+        input[type="number"] {
             width: 100%;
-            padding: 1rem;
-            background: rgba(40, 40, 60, 0.7);
-            border: 2px solid rgba(138, 43, 226, 0.3);
-            border-radius: 10px;
-            color: var(--text);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .custom-amount input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
-        }
-
-        .donate-button {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border: none;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 15px;
             border-radius: 10px;
             color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
         }
 
-        .donate-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.6);
+        input[type="number"]:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
         }
 
-        .donate-button:active {
-            transform: translateY(0);
-        }
-
-        .qris-frame {
-            width: 120%;
-            max-width: 320px;
-            height: 300px;
-            border: none;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-            transition: all 0.5s ease;
-        }
-
-        .qris-frame:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
-        }
-
-        .instructions {
-            text-align: center;
-            margin-top: 1rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-            animation: fadeInUp 1s ease-out 0.6s both;
-        }
-
-        .feature-card {
-            background: rgba(20, 20, 30, 0.7);
+        /* --- QR AREA --- */
+        .qr-wrapper {
+            position: relative;
+            width: 230px;
+            height: 230px;
+            margin: 0 auto 20px;
+            background: #fff;
+            padding: 10px;
             border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(138, 43, 226, 0.2);
-            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
         }
 
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(138, 43, 226, 0.2);
+        /* Scanning Animation Line */
+        .qr-scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: var(--secondary);
+            box-shadow: 0 0 10px var(--secondary);
+            top: 0;
+            left: 0;
+            animation: scan 2s infinite linear;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.8;
         }
 
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        iframe {
+            border-radius: 5px;
+            display: block;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 15px;
+        }
+
+        .blink {
+            animation: blinker 1.5s linear infinite;
             color: var(--primary);
         }
 
-        .feature-title {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--text);
+        @keyframes blinker {
+            50% { opacity: 0; }
         }
 
-        .feature-description {
-            color: var(--text-secondary);
-            line-height: 1.6;
+        /* --- LOADER --- */
+        .loader {
+            border: 3px solid rgba(0,0,0,0.1);
+            border-left-color: var(--secondary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            position: absolute;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        footer {
-            text-align: center;
-            padding: 2rem 0;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(138, 43, 226, 0.2);
-            animation: fadeIn 1s ease-out 0.9s both;
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(138, 43, 226, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(138, 43, 226, 0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .donation-section {
-                flex-direction: column;
-            }
-            
-            .qris-frame {
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
+
+    <div class="grid-bg"></div>
+
     <div class="container">
-        <header>
-            <div class="logo">DONASI WEB</div>
-            <p class="tagline">Bantu kami mengembangkan website ini menjadi lebih baik</p>
-        </header>
+        <div class="donation-card">
+            <h1>Web Dev Fund</h1>
+            <p class="subtitle">Bantu kami membangun masa depan website yang lebih canggih. Dukungan Anda adalah bahan bakar kode kami.</p>
 
-        <section class="donation-section">
-            <div class="donation-options">
-                <h2 class="section-title">Pilih Nominal Donasi</h2>
-                
-                <div class="amount-options">
-                    <div class="amount-option" data-amount="10000">Rp 10.000</div>
-                    <div class="amount-option" data-amount="25000">Rp 25.000</div>
-                    <div class="amount-option" data-amount="50000">Rp 50.000</div>
-                    <div class="amount-option" data-amount="100000">Rp 100.000</div>
-                    <div class="amount-option" data-amount="250000">Rp 250.000</div>
-                    <div class="amount-option" data-amount="500000">Rp 500.000</div>
-                </div>
-                
-                <div class="custom-amount">
-                    <input type="number" id="customAmount" placeholder="Atau masukkan nominal lainnya">
-                </div>
-                
-                <button class="donate-button pulse" id="generateQR">Generate QRIS</button>
-            </div>
-            
-            <div class="qris-container">
-                <h2 class="section-title">QRIS Donasi</h2>
-                <iframe class="qris-frame" id="qrisFrame" src="https://xenzofficial.github.io/donate?amount=50000" frameborder="0"></iframe>
-                <p class="instructions">Scan QR code di atas untuk melakukan donasi</p>
-            </div>
-        </section>
 
-        <section class="features">
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3 class="feature-title">Aman & Terpercaya</h3>
-                <p class="feature-description">Donasi Anda diproses dengan aman melalui sistem pembayaran terpercaya.</p>
+            <!-- Manual Input -->
+            <div class="input-group">
+                <label for="customAmount">Input Nominal (IDR)</label>
+                <input type="number" id="customAmount" placeholder="Masukkan jumlah..." value="20000" oninput="handleInput()">
             </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">🚀</div>
-                <h3 class="feature-title">Pengembangan Berkualitas</h3>
-                <p class="feature-description">Dana akan digunakan untuk meningkatkan kualitas dan fitur website.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">💜</div>
-                <h3 class="feature-title">Dukungan Anda Berarti</h3>
-                <p class="feature-description">Setiap donasi membantu kami terus berinovasi dan memberikan yang terbaik.</p>
-            </div>
-        </section>
 
-        <footer>
-            <p>&copy; 2023 Donasi Web Development. Semua hak dilindungi.</p>
-            <p>Terima kasih atas dukungan Anda!</p>
-        </footer>
+            <!-- QR Display -->
+            <div class="qr-wrapper">
+                <div class="qr-scan-line"></div>
+                <div id="loader" class="loader" style="display: none;"></div>
+                <iframe 
+                    id="qrisFrame"
+                    src="" 
+                    width="210" 
+                    height="210"
+                    frameborder="0"
+                    scrolling="no">
+                </iframe>
+            </div>
+
+            <div class="footer">
+                <p>🔒 Secure Payment by QRIS</p>
+                <p style="margin-top: 5px;">© 2025 <span class="blink">AL Official</span></p>
+            </div>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const amountOptions = document.querySelectorAll('.amount-option');
-            const customAmountInput = document.getElementById('customAmount');
-            const generateQRButton = document.getElementById('generateQR');
-            const qrisFrame = document.getElementById('qrisFrame');
+        // Elemen DOM
+        const iframe = document.getElementById('qrisFrame');
+        const customInput = document.getElementById('customAmount');
+        const chips = document.querySelectorAll('.chip');
+        const loader = document.getElementById('loader');
+
+        // URL Dasar API
+        const baseURL = "https://xenzofficial.github.io/donate/qris";
+        
+        let typingTimer; // Timer untuk debounce input
+
+        // Fungsi Memuat QR Code
+        function loadQR(nominal) {
+            // Tampilkan loader sementara iframe memuat
+            loader.style.display = "block";
+            iframe.style.opacity = "0.3";
+
+            // Format URL
+            // Kita gunakan size 210 sesuai iframe agar pas
+            const finalURL = `${baseURL}?amount=${nominal}&size=210`;
             
-            let selectedAmount = 50000;
+            iframe.src = finalURL;
+
+            // Ketika iframe selesai memuat
+            iframe.onload = function() {
+                loader.style.display = "none";
+                iframe.style.opacity = "1";
+            };
+        }
+
+        // Fungsi Menangani Klik Tombol Preset
+        function setAmount(value) {
+            // Update UI tombol
+            chips.forEach(chip => chip.classList.remove('active'));
+            // Cari tombol yang diklik (sedikit tricky karena 'this' di onclick inline)
+            // Jadi kita cari berdasarkan text content atau logic sederhana
+            event.target.classList.add('active');
+
+            // Update Input
+            customInput.value = value;
+
+            // Reload QR
+            loadQR(value);
+        }
+
+        // Fungsi Menangani Input Manual
+        function handleInput() {
+            // Hapus kelas aktif dari semua tombol preset
+            chips.forEach(chip => chip.classList.remove('active'));
+
+            // Debounce (tunggu user selesai mengetik sebentar sebelum request API)
+            clearTimeout(typingTimer);
             
-            // Event listener untuk pilihan nominal
-            amountOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    // Hapus kelas active dari semua opsi
-                    amountOptions.forEach(opt => opt.classList.remove('active'));
-                    
-                    // Tambahkan kelas active ke opsi yang dipilih
-                    this.classList.add('active');
-                    
-                    // Set nilai amount yang dipilih
-                    selectedAmount = this.getAttribute('data-amount');
-                    
-                    // Kosongkan input custom amount
-                    customAmountInput.value = '';
-                });
-            });
-            
-            // Event listener untuk input custom amount
-            customAmountInput.addEventListener('input', function() {
-                // Hapus kelas active dari semua opsi
-                amountOptions.forEach(opt => opt.classList.remove('active'));
-                
-                // Set nilai amount dari input
-                selectedAmount = this.value;
-            });
-            
-            // Event listener untuk tombol generate QR
-            generateQRButton.addEventListener('click', function() {
-                if (!selectedAmount || selectedAmount <= 0) {
-                    alert('Silakan pilih atau masukkan nominal donasi yang valid.');
-                    return;
-                }
-                
-                // Update iframe dengan amount yang dipilih
-                qrisFrame.src = `https://xenzofficial.github.io/donate?amount=${selectedAmount}`;
-                
-                // Tambahkan efek animasi pada iframe
-                qrisFrame.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    qrisFrame.style.transform = 'scale(1)';
-                }, 300);
-            });
-            
-            // Inisialisasi dengan opsi pertama aktif
-            amountOptions[2].classList.add('active');
-        });
+            const val = customInput.value;
+
+            if(val && val > 0) {
+                typingTimer = setTimeout(() => {
+                    loadQR(val);
+                }, 800); // Delay 800ms
+            }
+        }
+
+        // Inisialisasi awal (Default 20k)
+        window.onload = () => {
+            loadQR(20000);
+        };
+
     </script>
 </body>
 </html>
