@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Uploader</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            flex-grow: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #3498db;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .duration-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .status-box {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            display: none;
+        }
+        
+        .status-box.show {
+            display: block;
+        }
+        
+        .file-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .file-info.show {
+            display: block;
+        }
+        
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .redirect-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #2ecc71;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .redirect-link:hover {
+            background-color: #27ae60;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .note {
+            background-color: #fffde7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #f1c40f;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin-top: 15px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>File Uploader dengan Durasi Waktu</h1>
+        <p>Unggah file HTML dan tentukan berapa lama file akan tersedia</p>
+    </header>
+    
+    <div class="container">
+        <div class="form-group">
+            <label for="fileInput">Pilih File HTML:</label>
+            <input type="file" id="fileInput" accept=".html,.htm">
+            <div class="duration-info">Hanya file HTML yang diperbolehkan (.html, .htm)</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="durationInput">Durasi Tersedia (detik):</label>
+            <input type="number" id="durationInput" min="10" max="3600" value="60">
+            <div class="duration-info">Masukkan durasi dalam detik (min: 10 detik, max: 1 jam)</div>
+        </div>
+        
+        <button id="uploadBtn">Unggah File</button>
+        
+        <div class="progress-bar" id="progressBar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="status-box" id="statusBox">
+            <div id="statusText">Mengunggah file...</div>
+            <div class="timer" id="timer">Waktu tersisa: <span id="timeLeft">60</span> detik</div>
+            <div id="fileLinkContainer"></div>
+        </div>
+        
+        <div class="file-info" id="fileInfo">
+            <strong>Info File:</strong>
+            <div id="fileName"></div>
+            <div id="fileSize"></div>
+            <div id="fileType"></div>
+        </div>
+        
+        <div class="note">
+            <strong>Catatan:</strong> File yang diunggah akan langsung dibuka di tab baru setelah unggahan selesai. File akan tersedia sesuai durasi yang ditentukan, setelah itu akses ke file akan dimatikan. Karena ini hanya simulasi untuk GitHub Pages, file tidak benar-benar disimpan di server.
+        </div>
+    </div>
+    
+    <footer>
+        <p>File Uploader dengan Durasi Waktu | Dibuat untuk GitHub Pages</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const durationInput = document.getElementById('durationInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const statusBox = document.getElementById('statusBox');
+            const statusText = document.getElementById('statusText');
+            const timerElement = document.getElementById('timer');
+            const timeLeftElement = document.getElementById('timeLeft');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const fileType = document.getElementById('fileType');
+            const fileLinkContainer = document.getElementById('fileLinkContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progress = document.getElementById('progress');
+            
+            let countdownInterval = null;
+            let uploadedFileUrl = null;
+            
+            // Event listener untuk tombol upload
+            uploadBtn.addEventListener('click', uploadFile);
+            
+            // Event listener untuk perubahan file input
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    const file = this.files[0];
+                    showFileInfo(file);
+                } else {
+                    hideFileInfo();
+                }
+            });
+            
+            // Fungsi untuk menampilkan informasi file
+            function showFileInfo(file) {
+                fileName.textContent = `Nama: ${file.name}`;
+                fileSize.textContent = `Ukuran: ${formatFileSize(file.size)}`;
+                fileType.textContent = `Tipe: ${file.type || 'Tidak diketahui'}`;
+                fileInfo.classList.add('show');
+            }
+            
+            // Fungsi untuk menyembunyikan informasi file
+            function hideFileInfo() {
+                fileInfo.classList.remove('show');
+            }
+            
+            // Fungsi untuk memformat ukuran file
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Fungsi utama untuk mengupload file
+            function uploadFile() {
+                const file = fileInput.files[0];
+                const duration = parseInt(durationInput.value);
+                
+                // Validasi
+                if (!file) {
+                    alert('Silakan pilih file HTML terlebih dahulu.');
+                    return;
+                }
+                
+                // Periksa apakah file adalah HTML
+                const fileType = file.type;
+                const fileName = file.name.toLowerCase();
+                const isHtmlFile = fileType === 'text/html' || fileName.endsWith('.html') || fileName.endsWith('.htm');
+                
+                if (!isHtmlFile) {
+                    alert('Hanya file HTML yang diperbolehkan (.html, .htm).');
+                    return;
+                }
+                
+                if (duration < 10 || duration > 3600) {
+                    alert('Durasi harus antara 10 detik hingga 1 jam (3600 detik).');
+                    return;
+                }
+                
+                // Nonaktifkan tombol upload
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Mengunggah...';
+                
+                // Tampilkan progress bar
+                progressBar.style.display = 'block';
+                progress.style.width = '0%';
+                
+                // Simulasi proses upload dengan progress
+                simulateUpload(file, duration);
+            }
+            
+            // Fungsi untuk mensimulasikan proses upload
+            function simulateUpload(file, duration) {
+                let progressValue = 0;
+                
+                // Simulasi progress bar
+                const progressInterval = setInterval(() => {
+                    progressValue += 5;
+                    progress.style.width = `${progressValue}%`;
+                    
+                    if (progressValue >= 100) {
+                        clearInterval(progressInterval);
+                        
+                        // Upload selesai
+                        onUploadComplete(file, duration);
+                    }
+                }, 100);
+            }
+            
+            // Fungsi yang dipanggil ketika upload selesai
+            function onUploadComplete(file, duration) {
+                // Sembunyikan progress bar
+                progressBar.style.display = 'none';
+                
+                // Buat URL untuk file yang diupload
+                uploadedFileUrl = URL.createObjectURL(file);
+                
+                // Tampilkan status box
+                statusText.textContent = 'File berhasil diunggah!';
+                statusBox.classList.add('show');
+                
+                // Tampilkan timer
+                timerElement.style.display = 'block';
+                timeLeftElement.textContent = duration;
+                
+                // Buat tautan untuk membuka file
+                const link = document.createElement('a');
+                link.href = uploadedFileUrl;
+                link.textContent = 'Buka File HTML yang Diunggah';
+                link.className = 'redirect-link';
+                link.target = '_blank';
+                
+                // Kosongkan container tautan dan tambahkan tautan baru
+                fileLinkContainer.innerHTML = '';
+                fileLinkContainer.appendChild(link);
+                
+                // Mulai countdown
+                startCountdown(duration);
+                
+                // Buka file secara otomatis di tab baru setelah 1 detik
+                setTimeout(() => {
+                    link.click();
+                }, 1000);
+                
+                // Reset tombol upload
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Unggah File Baru';
+            }
+            
+            // Fungsi untuk memulai countdown
+            function startCountdown(duration) {
+                let timeLeft = duration;
+                
+                // Hapus interval sebelumnya jika ada
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+                
+                // Atur interval untuk countdown
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    timeLeftElement.textContent = timeLeft;
+                    
+                    // Jika waktu habis
+                    if (timeLeft <= 0) {
+                        clearInterval(countdownInterval);
+                        
+                        // Matikan akses ke file
+                        if (uploadedFileUrl) {
+                            URL.revokeObjectURL(uploadedFileUrl);
+                            uploadedFileUrl = null;
+                        }
+                        
+                        // Update status
+                        statusText.textContent = 'Akses file telah berakhir. Unggah file baru jika diperlukan.';
+                        timerElement.style.display = 'none';
+                        fileLinkContainer.innerHTML = '<p style="color:#e74c3c; margin-top:10px;">File tidak lagi tersedia (durasi habis)</p>';
+                    }
+                }, 1000);
+            }
+            
+            // Validasi input durasi
+            durationInput.addEventListener('change', function() {
+                let value = parseInt(this.value);
+                
+                if (value < 10) {
+                    this.value = 10;
+                } else if (value > 3600) {
+                    this.value = 3600;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
