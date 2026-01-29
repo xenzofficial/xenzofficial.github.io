@@ -1,6 +1,6 @@
 <!-- EXAMPLE TO USE
 <iframe 
-    src="https://example.com/?amount=1000&size=200" 
+    src="https://example.com/qris.html?amount=1000&size=200" 
     width="210" 
     height="210"
     frameborder="0"
@@ -80,7 +80,7 @@
             const size = getUrlParameter('size') || 300;
             
             if (!payParam || isNaN(payParam) || parseInt(payParam) <= 0) {
-                document.body.innerHTML = '<div style="color:red;text-align:center;padding:20px;">Invalid parameter. Use ?pay=10000</div>';
+                document.body.innerHTML = '<div style="color:red;text-align:center;padding:20px;">Pake angka dong sayang</div>';
                 return;
             }
 
